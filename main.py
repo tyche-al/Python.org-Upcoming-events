@@ -12,6 +12,10 @@ EVENT_LINK = './a'
 class Event:
 	def __init__(self, source):
 		self.source = source
+		self.widget = widget
+		self.event_item = event_item
+		self.event_link = event_link
+		self.time = time		
 
 	def parse_list_item(self, event):
 		self.event = event
@@ -22,12 +26,6 @@ class Event:
 
 	def get_events(self, widget, event_item, event_link, time):
 		page = requests.get(self.source)
-
-		self.widget = widget
-		self.event_item = event_item
-		self.event_link = event_link
-		self.time = time
-
 		self.tree = fromstring(page.content).xpath(self.widget)[0]
 		self.events =[self.parse_list_item(event) for event in self.tree.xpath(self.event_item)]
 
