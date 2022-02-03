@@ -20,10 +20,10 @@ class Event:
 		self.event_info = (self.event.xpath(EVENT_LINK)[0].get('href'))
 
 	def __str__(self):
-		return f'{self.event_date} {self.event_name} {SOURCE}{self.event_name}'
+		return f'{self.event_date} {self.event_name} {SOURCE}{self.event_info}'
 
 	def __repr__(self):
-		return f'{self.event_date} {self.event_name} {SOURCE}{self.event_name}'
+		return f'{self.event_date} {self.event_name} {SOURCE}{self.event_info}'
 
 
 def get_events():
