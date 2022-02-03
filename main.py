@@ -2,39 +2,37 @@ from datetime import datetime
 from lxml.html import fromstring 
 import requests
 
+
 SOURCE = 'https://python.org'
-EVENT_ITEM = './/li'
+EVENT = './/li'
 WIDGET = './/div[@class="medium-widget event-widget last"]'
 TIME = './time'
 EVENT_LINK = './a'
 
 
 class Event:
-	def __init__(self, source):
-		self.source = source
-		self.widget = widget
-		self.event_item = event_item
-		self.event_link = event_link
-		self.time = time		
-
-	def parse_list_item(self, event):
+	def __init__(self, event):	
 		self.event = event
-		self.event_date = datetime.fromisoformat(self.event.xpath(self.time)[0].get('datetime'))
-		self.event_info = (event.xpath(self.event_link)[0].get('href'))
-		self.event_name = (event.xpath(self.event_link)[0].text_content())
-		return (self.event_date, self.event_name, self.event_info)
 
-	def get_events(self, widget, event_item, event_link, time):
-		page = requests.get(self.source)
-		self.tree = fromstring(page.content).xpath(self.widget)[0]
-		self.events =[self.parse_list_item(event) for event in self.tree.xpath(self.event_item)]
+	def parse_item(self):
+		self.event_date = datetime.fromisoformat(self.event.xpath(TIME)[0].get('datetime'))
+		self.event_name = (self.event.xpath(EVENT_LINK)[0].text_content())
+		self.event_info = (self.event.xpath(EVENT_LINK)[0].get('href'))
 
-	def _print(self):
-		for event in self.events:
-			print(f'{event[0]} {event[1]} {self.source}{event[2]}')
+	def __str__(self):
+		return f'{self.event_date} {self.event_name} {SOURCE}{self.event_name}'
+
+	def __repr__(self):
+		return f'{self.event_date} {self.event_name} {SOURCE}{self.event_name}'
+
+
+def get_events():
+	page = requests.get(SOURCE)
+	return fromstring(page.content).xpath(WIDGET)[0].xpath(EVENT)
 
 
 if __name__ == '__main__':
-	events = Event(SOURCE)
-	events.get_events(WIDGET, EVENT_ITEM, EVENT_LINK, TIME)
-	events._print()
+	for item in get_events():
+		event = Event(item)
+		event.parse_item()
+		print(event)
